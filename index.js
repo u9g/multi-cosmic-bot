@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const mineflayer = require("mineflayer");
 const client = new Discord.Client();
 const helper = require("./helper.js");
+const activity = require("./plugins/activity.js");
+const { start } = require("./plugins/balance.js");
 const logins = Object.entries(require("./configs/login.json").logins).map(
   (x) => x[1]
 );
@@ -35,6 +37,7 @@ client.login(require("./configs/login.json")["discord-token"]);
 const plugins = {
   bal: require("./plugins/balance.js"),
   abal: require("./plugins/allianceBalance.js"),
+  activity: require("./plugins/activity"),
 };
 
 client.on("message", (msg) => {
@@ -50,9 +53,17 @@ client.on("message", (msg) => {
     msg.content.startsWith(">activity") &&
     msg.author.id === "424969732932894721"
   ) {
-    //do stuff
+    startActivityCommand(accounts, Discord, msg);
   }
 });
+
+function startActivityCommand(bots, Discord, msg) {
+  return new Promise((resolve, reject) =>
+    activity.start(bots, Discord, resolve)
+  ).then((embed) => {
+    msg.channel.send(embed);
+  });
+}
 
 function startBalanceCommand(acc, msg) {
   const args = msg.content.substring(">bal".length + 1);
