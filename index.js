@@ -1,8 +1,10 @@
 const Discord = require("discord.js");
 const mineflayer = require("mineflayer");
 const client = new Discord.Client();
-const helper = require("./configs/helper.js");
-const logins = Object.entries(require("./login.json").logins).map((x) => x[1]);
+const helper = require("helper.js");
+const logins = Object.entries(require("./configs/login.json").logins).map(
+  (x) => x[1]
+);
 let accounts = [];
 
 function startBots() {
