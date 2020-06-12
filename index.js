@@ -30,7 +30,7 @@ function join(accounts) {
 
 startBots();
 join(accounts);
-client.login(require("./login.json")["discord-token"]);
+client.login(require("./configs/login.json")["discord-token"]);
 
 const plugins = {
   bal: require("./balance.js"),
