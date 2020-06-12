@@ -33,8 +33,8 @@ join(accounts);
 client.login(require("./configs/login.json")["discord-token"]);
 
 const plugins = {
-  bal: require("./balance.js"),
-  abal: require("./allianceBalance.js"),
+  bal: require("./plugins/balance.js"),
+  abal: require("./plugins/allianceBalance.js"),
 };
 
 client.on("message", (msg) => {
@@ -46,6 +46,11 @@ client.on("message", (msg) => {
     const acc = accounts.find((x) => !x[1].busy);
     acc[1].busy = true;
     startAllianceBalanceCommand(acc, msg);
+  } else if (
+    msg.content.startsWith(">activity") &&
+    msg.author.id === "424969732932894721"
+  ) {
+    //do stuff
   }
 });
 

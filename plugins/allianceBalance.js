@@ -1,3 +1,4 @@
+const util = require("../util.js");
 function start(acc, args, Discord, discord_msg, resolve, reject) {
   let data = {};
   let showingAllianceMembers = false;
@@ -8,7 +9,6 @@ function start(acc, args, Discord, discord_msg, resolve, reject) {
     bot.chat("/a who " + args);
     bot.on("message", (msg) => {
       const fullText = msg.toString();
-      console.log(fullText);
       if (fullText.includes("----------- [ ")) {
         data.name = getAllianceName(fullText);
         showingAllianceMembers = true;
@@ -32,7 +32,6 @@ function start(acc, args, Discord, discord_msg, resolve, reject) {
         //showing a person's balance in chat
         const info = compileBalance(fullText);
         data.balances[info.ign] = info.balance;
-        console.log(Object.entries(data.balances).length);
         if (Object.entries(data.balances).length === data.members.length) {
           //IF ALL BALANCES ARE GRABBED
           bot.removeAllListeners(["message"]);
@@ -66,12 +65,9 @@ function createDescription(balances) {
   let counter = 1;
   const bals = sortBalancesArr(balances);
   bals.forEach((memberEntry) => {
-    description +=
-      `${counter}. ` +
-      "`" +
-      memberEntry[0] +
-      "`" +
-      ` has **$${numberWithCommas(memberEntry[1])}**\n`;
+    description += `${counter}. **${util.EscapeMarkdown(
+      memberEntry[0]
+    )}** has $${numberWithCommas(memberEntry[1])}\n`;
     counter++;
   });
   const total = createTotal(balances);
