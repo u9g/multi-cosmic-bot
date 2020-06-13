@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const mineflayer = require("mineflayer");
 const client = new Discord.Client();
 const helper = require("./helper.js");
-const { start } = require("./plugins/balance.js");
+const { handler } = require("./commands");
 const logins = Object.entries(require("./configs/login.json").logins).map(
   (x) => x[1]
 );
@@ -49,15 +49,25 @@ client.on("message", (msg) => {
     if (!acc) {
       msg.channel.send(createBotBusyEmbed());
     } else {
-      acc[1].busy = true;
-      startBalanceCommand(acc, msg);
+      handleCooldown(msg, "bal").then(
+        () => {
+          acc[1].busy = true;
+          startBalanceCommand(acc, msg);
+        },
+        () => {}
+      );
     }
   } else if (msg.content.startsWith(">a bal")) {
     if (!acc) {
       msg.channel.send(createBotBusyEmbed());
     } else {
-      acc[1].busy = true;
-      startAllianceBalanceCommand(acc, msg);
+      handleCooldown(msg, "abal").then(
+        () => {
+          acc[1].busy = true;
+          startAllianceBalanceCommand(acc, msg);
+        },
+        () => {}
+      );
     }
   } else if (
     msg.content.startsWith(">pun") ||
@@ -69,8 +79,13 @@ client.on("message", (msg) => {
     if (!acc) {
       msg.channel.send(createBotBusyEmbed());
     } else {
-      acc[1].busy = true;
-      startPointsTopCommand(acc, msg);
+      handleCooldown(msg, "puns").then(
+        () => {
+          acc[1].busy = true;
+          startPointsTopCommand(acc, msg);
+        },
+        () => {}
+      );
     }
   } else if (msg.content === ">help") {
     startHelpCommand(msg);
@@ -78,8 +93,13 @@ client.on("message", (msg) => {
     if (!acc) {
       msg.channel.send(createBotBusyEmbed());
     } else {
-      acc[1].busy = true;
-      startIsTop(acc, msg);
+      handleCooldown(msg, "puns").then(
+        () => {
+          acc[1].busy = true;
+          startIsTop(acc, msg);
+        },
+        () => {}
+      );
     }
   } else if (
     msg.content.startsWith(">activity") &&
@@ -88,6 +108,12 @@ client.on("message", (msg) => {
     startActivityCommand(accounts, msg);
   }
 });
+
+function handleCooldown(msg, type) {
+  return new Promise(function (resolve, reject) {
+    handler(msg, type, resolve, reject);
+  });
+}
 
 function createBotBusyEmbed() {
   return new Discord.MessageEmbed().setTitle(
