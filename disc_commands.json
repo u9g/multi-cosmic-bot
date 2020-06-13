@@ -33,5 +33,10 @@
     "plugin_name": "is_top",
     "cmd_name": ">is top",
     "description": "Gets either the top 15 islands or the given page of is top."
+  },
+  "lvltop": {
+    "plugin_name": "lvl_top",
+    "cmd_name": ">lvl top",
+    "description": "Gets either the top 15 players or the given page of lvl top."
   }
 }
