@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 const mineflayer = require("mineflayer");
 const client = new Discord.Client();
 const helper = require("./helper.js");
-const activity = require("./plugins/activity.js");
 const { start } = require("./plugins/balance.js");
 const logins = Object.entries(require("./configs/login.json").logins).map(
   (x) => x[1]
@@ -35,34 +34,45 @@ join(accounts);
 client.login(require("./configs/login.json")["discord-token"]);
 
 const plugins = {
-  bal: require("./plugins/balance.js"),
-  abal: require("./plugins/allianceBalance.js"),
+  bal: require("./plugins/balance"),
+  abal: require("./plugins/allianceBalance"),
   activity: require("./plugins/activity"),
+  punishments: require("./plugins/getPunishments"),
 };
 
 client.on("message", (msg) => {
+  const acc = accounts.find((x) => !x[1].busy);
   if (msg.content.startsWith(">bal")) {
-    const acc = accounts.find((x) => !x[1].busy);
     acc[1].busy = true;
     startBalanceCommand(acc, msg);
   } else if (msg.content.startsWith(">a bal")) {
-    const acc = accounts.find((x) => !x[1].busy);
     acc[1].busy = true;
     startAllianceBalanceCommand(acc, msg);
+  } else if (
+    msg.content.startsWith(">pun") ||
+    msg.content.startsWith(">puns") ||
+    msg.content.startsWith(">punishments")
+  ) {
+    startPunishmentsCommand(acc, msg);
   } else if (
     msg.content.startsWith(">activity") &&
     msg.author.id === "424969732932894721"
   ) {
-    startActivityCommand(accounts, Discord, msg);
+    startActivityCommand(accounts, msg);
   }
 });
 
-function startActivityCommand(bots, Discord, msg) {
+function startPunishmentsCommand(acc, msg) {
+  const args = msg.content.split(" ");
+  return new Promise((resolve, reject) => {
+    plugins.punishments.start(acc, args, Discord, resolve);
+  }).then((embed) => msg.channel.send(embed));
+}
+
+function startActivityCommand(bots, msg) {
   return new Promise((resolve, reject) =>
-    activity.start(bots, Discord, resolve)
-  ).then((embed) => {
-    msg.channel.send(embed);
-  });
+    plugins.activity.start(bots, Discord, resolve)
+  ).then((embed) => msg.channel.send(embed));
 }
 
 function startBalanceCommand(acc, msg) {

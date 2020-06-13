@@ -1,3 +1,4 @@
+const util = require("./util.js");
 const userDoesntExist = /(\(\!\)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\w+)\!)/;
 
 function start(acc, args, Discord, resolve) {
@@ -41,7 +42,7 @@ function CreateHelpEmbed(Discord) {
 function CreateEmbed(Discord, info) {
   return new Discord.MessageEmbed()
     .setColor("PURPLE")
-    .setTitle("`" + info.ign + "`" + " has $" + info.balance);
+    .setTitle(`${util.EscapeMarkdown(info.ign)} has $${info.balance}`);
 }
 
 module.exports = { start };
