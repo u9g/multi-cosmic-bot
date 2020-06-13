@@ -79,7 +79,7 @@ client.on("message", (msg) => {
     if (!acc) {
       msg.channel.send(createBotBusyEmbed());
     } else {
-      handleCooldown(msg, "puns").then(
+      handleCooldown(msg, "ispointstop").then(
         () => {
           acc[1].busy = true;
           startPointsTopCommand(acc, msg);
@@ -93,7 +93,7 @@ client.on("message", (msg) => {
     if (!acc) {
       msg.channel.send(createBotBusyEmbed());
     } else {
-      handleCooldown(msg, "puns").then(
+      handleCooldown(msg, "istop").then(
         () => {
           acc[1].busy = true;
           startIsTop(acc, msg);
