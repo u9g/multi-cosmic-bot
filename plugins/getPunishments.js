@@ -1,6 +1,6 @@
 const util = require("./util.js"); //util.EscapeMarkdown;
 const helper = require("./getPunishmentsHelper.js");
-function start(acc, args, Discord, resolve) {
+function start(args, Discord, resolve) {
   if (!args[1] || args[1] === "") {
     resolve(createHelpEmbed(Discord));
   } else {

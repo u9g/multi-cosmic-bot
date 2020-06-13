@@ -38,6 +38,7 @@ const plugins = {
   abal: require("./plugins/allianceBalance"),
   activity: require("./plugins/activity"),
   punishments: require("./plugins/getPunishments"),
+  pointstop: require("./plugins/isPointsTop"),
 };
 
 client.on("message", (msg) => {
@@ -53,7 +54,10 @@ client.on("message", (msg) => {
     msg.content.startsWith(">puns") ||
     msg.content.startsWith(">punishments")
   ) {
-    startPunishmentsCommand(acc, msg);
+    startPunsCommand(acc, msg);
+  } else if (msg.content === ">is points top") {
+    acc[1].busy = true;
+    startPointsTopCommand(acc, msg);
   } else if (
     msg.content.startsWith(">activity") &&
     msg.author.id === "424969732932894721"
@@ -62,10 +66,20 @@ client.on("message", (msg) => {
   }
 });
 
-function startPunishmentsCommand(acc, msg) {
+function startPointsTopCommand(acc, msg) {
   const args = msg.content.split(" ");
   return new Promise((resolve, reject) => {
-    plugins.punishments.start(acc, args, Discord, resolve);
+    plugins.pointstop.start(acc, args, Discord, resolve);
+  }).then((embed) => {
+    acc[1].busy = false;
+    msg.channel.send(embed);
+  });
+}
+
+function startPunsCommand(acc, msg) {
+  const args = msg.content.split(" ");
+  return new Promise((resolve, reject) => {
+    plugins.punishments.start(args, Discord, resolve);
   }).then((embed) => msg.channel.send(embed));
 }
 
@@ -88,15 +102,9 @@ function startBalanceCommand(acc, msg) {
 function startAllianceBalanceCommand(acc, msg) {
   const args = msg.content.substring(">a bal".length + 1);
   return new Promise((resolve, reject) =>
-    plugins.abal.start(acc, args, Discord, msg, resolve, reject)
-  ).then(
-    (embed) => {
-      acc[1].busy = false;
-      msg.channel.send(embed);
-    },
-    function error(embed) {
-      acc[1].busy = false;
-      msg.channel.send(embed);
-    }
-  );
+    plugins.abal.start(acc, args, Discord, msg, resolve)
+  ).then((embed) => {
+    acc[1].busy = false;
+    msg.channel.send(embed);
+  });
 }

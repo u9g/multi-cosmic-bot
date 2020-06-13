@@ -1,9 +1,9 @@
 const util = require("./util.js");
-function start(acc, args, Discord, discord_msg, resolve, reject) {
+function start(acc, args, Discord, discord_msg, resolve) {
   let data = {};
   let showingAllianceMembers = false;
   if (args === "") {
-    reject(CreateHelpEmbed(Discord));
+    resolve(CreateHelpEmbed(Discord));
   } else {
     let bot = acc[0];
     bot.chat("/a who " + args);
