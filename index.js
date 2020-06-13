@@ -41,6 +41,7 @@ const plugins = {
   pointstop: require("./plugins/isPointsTop"),
   help: require("./plugins/helpCommand"),
   istop: require("./plugins/isTop"),
+  puntop: require("./plugins/punishmentsTop.js"),
 };
 
 client.on("message", (msg) => {
@@ -70,9 +71,9 @@ client.on("message", (msg) => {
       );
     }
   } else if (
-    msg.content.startsWith(">pun") ||
-    msg.content.startsWith(">puns") ||
-    msg.content.startsWith(">punishments")
+    (msg.content.startsWith(">pun") && !msg.content.includes("top")) ||
+    (msg.content.startsWith(">puns") && !msg.content.includes("top")) ||
+    (msg.content.startsWith(">punishments") && !msg.content.includes("top"))
   ) {
     startPunsCommand(acc, msg);
   } else if (msg.content === ">is points top") {
@@ -101,6 +102,12 @@ client.on("message", (msg) => {
         () => {}
       );
     }
+  } else if (
+    msg.content.startsWith(">puntop") ||
+    msg.content.startsWith(">punstop") ||
+    msg.content.startsWith(">punishmentstop")
+  ) {
+    startPunsTopCommand(acc, msg);
   } else if (
     msg.content.startsWith(">activity") &&
     msg.author.id === "424969732932894721"
@@ -151,6 +158,12 @@ function startPunsCommand(acc, msg) {
   const args = msg.content.split(" ");
   return new Promise((resolve, reject) => {
     plugins.punishments.start(args, Discord, resolve);
+  }).then((embed) => msg.channel.send(embed));
+}
+function startPunsTopCommand(acc, msg) {
+  const args = msg.content.split(" ")[1];
+  return new Promise((resolve, reject) => {
+    plugins.puntop.start(args, Discord, resolve);
   }).then((embed) => msg.channel.send(embed));
 }
 
