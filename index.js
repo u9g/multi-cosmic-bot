@@ -46,11 +46,19 @@ const plugins = {
 client.on("message", (msg) => {
   const acc = accounts.find((x) => !x[1].busy);
   if (msg.content.startsWith(">bal")) {
-    acc[1].busy = true;
-    startBalanceCommand(acc, msg);
+    if (!acc) {
+      msg.channel.send(createBotBusyEmbed());
+    } else {
+      acc[1].busy = true;
+      startBalanceCommand(acc, msg);
+    }
   } else if (msg.content.startsWith(">a bal")) {
-    acc[1].busy = true;
-    startAllianceBalanceCommand(acc, msg);
+    if (!acc) {
+      msg.channel.send(createBotBusyEmbed());
+    } else {
+      acc[1].busy = true;
+      startAllianceBalanceCommand(acc, msg);
+    }
   } else if (
     msg.content.startsWith(">pun") ||
     msg.content.startsWith(">puns") ||
@@ -58,13 +66,21 @@ client.on("message", (msg) => {
   ) {
     startPunsCommand(acc, msg);
   } else if (msg.content === ">is points top") {
-    acc[1].busy = true;
-    startPointsTopCommand(acc, msg);
+    if (!acc) {
+      msg.channel.send(createBotBusyEmbed());
+    } else {
+      acc[1].busy = true;
+      startPointsTopCommand(acc, msg);
+    }
   } else if (msg.content === ">help") {
     startHelpCommand(msg);
   } else if (msg.content.startsWith(">is top")) {
-    acc[1].busy = true;
-    startIsTop(acc, msg);
+    if (!acc) {
+      msg.channel.send(createBotBusyEmbed());
+    } else {
+      acc[1].busy = true;
+      startIsTop(acc, msg);
+    }
   } else if (
     msg.content.startsWith(">activity") &&
     msg.author.id === "424969732932894721"
@@ -72,6 +88,12 @@ client.on("message", (msg) => {
     startActivityCommand(accounts, msg);
   }
 });
+
+function createBotBusyEmbed() {
+  return new Discord.MessageEmbed().setTitle(
+    "The bot is currently busy, please wait a few moments and try again."
+  );
+}
 
 function startIsTop(acc, msg) {
   return new Promise((resolve, reject) => {
