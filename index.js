@@ -42,6 +42,7 @@ const plugins = {
   help: require("./plugins/helpCommand"),
   istop: require("./plugins/isTop"),
   puntop: require("./plugins/punishmentsTop.js"),
+  lvltop: require("./plugins/lvlTop"),
 };
 
 client.on("message", (msg) => {
@@ -103,6 +104,21 @@ client.on("message", (msg) => {
       );
     }
   } else if (
+    msg.content.startsWith(">lvl top") ||
+    msg.content.startsWith(">level top")
+  ) {
+    if (!acc) {
+      msg.channel.send(createBotBusyEmbed());
+    } else {
+      handleCooldown(msg, "lvltop").then(
+        () => {
+          acc[1].busy = true;
+          startLvlTop(acc, msg);
+        },
+        () => {}
+      );
+    }
+  } else if (
     msg.content.startsWith(">puntop") ||
     msg.content.startsWith(">punstop") ||
     msg.content.startsWith(">punishmentstop")
@@ -126,6 +142,16 @@ function createBotBusyEmbed() {
   return new Discord.MessageEmbed().setTitle(
     "The bot is currently busy, please wait a few moments and try again."
   );
+}
+
+function startLvlTop(acc, msg) {
+  return new Promise((resolve, reject) => {
+    const args = msg.content.substring(">lvl top".length).trim();
+    plugins.lvltop.start(acc, args, Discord, resolve);
+  }).then((embed) => {
+    acc[1].busy = false;
+    msg.channel.send(embed);
+  });
 }
 
 function startIsTop(acc, msg) {

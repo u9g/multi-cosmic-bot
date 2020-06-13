@@ -6,6 +6,7 @@ const commands = new Map([
   ["puntop", 5],
   ["ispointstop", 5],
   ["istop", 5],
+  ["lvltop", 5],
 ]);
 
 let commandCooldown = new Map([
@@ -16,6 +17,7 @@ let commandCooldown = new Map([
   ["puntop", new Map()],
   ["ispointstop", new Map()],
   ["istop", new Map()],
+  ["lvltop", new Map()],
 ]);
 
 const handler = function (message, command, resolve, reject) {
@@ -49,6 +51,7 @@ const handler = function (message, command, resolve, reject) {
       case "puntop":
       case "ispointstop":
       case "istop":
+      case "lvltop":
         resolve();
         commandCooldown.get(command).set(message.author.id, new Date());
         delay();
