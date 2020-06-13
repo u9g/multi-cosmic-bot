@@ -1,38 +1,5 @@
 const Discord = require("discord.js");
-const mineflayer = require("mineflayer");
-const client = new Discord.Client();
-const helper = require("./helper.js");
-const { start } = require("./plugins/balance.js");
-const logins = Object.entries(require("./configs/login.json").logins).map(
-  (x) => x[1]
-);
-let accounts = [];
-
-function startBots() {
-  for (const login of logins) {
-    accounts.push([
-      new mineflayer.createBot({
-        host: "cosmicsky.com",
-        port: 25565,
-        username: login[0],
-        password: login[1],
-      }),
-      { busy: false },
-    ]);
-  }
-}
-
-function join(accounts) {
-  accounts.forEach((account) => {
-    const bot = account[0];
-    helper.sendJoin(bot);
-  });
-}
-
-startBots();
-join(accounts);
-client.login(require("./configs/login.json")["discord-token"]);
-
+const { client, accounts } = require("./index");
 const plugins = {
   bal: require("./plugins/balance"),
   abal: require("./plugins/allianceBalance"),
@@ -40,9 +7,7 @@ const plugins = {
   punishments: require("./plugins/getPunishments"),
   pointstop: require("./plugins/isPointsTop"),
   help: require("./plugins/helpCommand"),
-  istop: require("./plugins/isTop"),
 };
-
 client.on("message", (msg) => {
   const acc = accounts.find((x) => !x[1].busy);
   if (msg.content.startsWith(">bal")) {
@@ -62,9 +27,6 @@ client.on("message", (msg) => {
     startPointsTopCommand(acc, msg);
   } else if (msg.content === ">help") {
     startHelpCommand(msg);
-  } else if (msg.content.startsWith(">is top")) {
-    acc[1].busy = true;
-    startIsTop(acc, msg);
   } else if (
     msg.content.startsWith(">activity") &&
     msg.author.id === "424969732932894721"
@@ -73,20 +35,20 @@ client.on("message", (msg) => {
   }
 });
 
-function startIsTop(acc, msg) {
-  return new Promise((resolve, reject) => {
-    const args = msg.content.substring(">is top".length).trim();
-    plugins.istop.start(acc, args, Discord, resolve);
-  }).then((embed) => {
-    acc[1].busy = false;
-    msg.channel.send(embed);
-  });
-}
-
 function startHelpCommand(msg) {
   return new Promise((resolve, reject) => {
     plugins.help.start(Discord, resolve);
   }).then((embed) => msg.channel.send(embed));
+}
+
+function startPointsTopCommand(acc, msg) {
+  const args = msg.content.split(" ");
+  return new Promise((resolve, reject) => {
+    plugins.pointstop.start(Discord, resolve);
+  }).then((embed) => {
+    acc[1].busy = false;
+    msg.channel.send(embed);
+  });
 }
 
 function startPointsTopCommand(acc, msg) {
@@ -98,20 +60,17 @@ function startPointsTopCommand(acc, msg) {
     msg.channel.send(embed);
   });
 }
-
 function startPunsCommand(acc, msg) {
   const args = msg.content.split(" ");
   return new Promise((resolve, reject) => {
     plugins.punishments.start(args, Discord, resolve);
   }).then((embed) => msg.channel.send(embed));
 }
-
 function startActivityCommand(bots, msg) {
   return new Promise((resolve, reject) =>
     plugins.activity.start(bots, Discord, resolve)
   ).then((embed) => msg.channel.send(embed));
 }
-
 function startBalanceCommand(acc, msg) {
   const args = msg.content.substring(">bal".length + 1);
   return new Promise((resolve, reject) =>
@@ -121,7 +80,6 @@ function startBalanceCommand(acc, msg) {
     msg.channel.send(embed);
   });
 }
-
 function startAllianceBalanceCommand(acc, msg) {
   const args = msg.content.substring(">a bal".length + 1);
   return new Promise((resolve, reject) =>

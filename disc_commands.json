@@ -1,0 +1,37 @@
+{
+  "baltop": {
+    "plugin_name": "baltop",
+    "cmd_name": ">baltop",
+    "description": "Gets the top 15 balances."
+  },
+  "balance": {
+    "plugin_name": "balance",
+    "cmd_name": ">bal",
+    "description": "Gets the balance of the user requested."
+  },
+  "alliance_balance": {
+    "plugin_name": "alliance_balance",
+    "cmd_name": ">a bal",
+    "description": "Gets the balance of the alliance requested."
+  },
+  "punishments": {
+    "plugin_name": "punishments",
+    "cmd_name": [">punishments", ">puns", ">pun"],
+    "description": "Gets the punishments of the user requested."
+  },
+  "punTop": {
+    "plugin_name": "punishments_top",
+    "cmd_name": [">puntop", ">punishmentstop"],
+    "description": "Gets users with the most punishments of the given type."
+  },
+  "island_points_top": {
+    "plugin_name": "island_points_top",
+    "cmd_name": ">is points top",
+    "description": "Gets the islands with the most island points."
+  },
+  "is_top": {
+    "plugin_name": "is_top",
+    "cmd_name": ">is top",
+    "description": "Gets either the top 15 islands or the given page of is top."
+  }
+}

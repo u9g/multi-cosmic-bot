@@ -23,6 +23,7 @@ function start(acc, args, Discord, resolve) {
     if (info.length === 75) {
       const sorted = sortArr(info);
       const embed = createEmbed(Discord, sorted, util);
+      bot.removeAllListeners(["message"]);
       resolve(embed);
       info = [];
     }
