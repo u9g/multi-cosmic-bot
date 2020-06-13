@@ -33,7 +33,7 @@ function start(args, Discord, resolve) {
 function createDescription(arr, arg) {
   let description = "";
   for (let i = 0; i < 10; i++) {
-    description += `${i + 1}. **${arr[i][0]} has ${arr[i][1]} ${arg[0]}(s)**\n`;
+    description += `${i + 1}. **${arr[i][0]} has ${arr[i][1]} ${arg}(s)**\n`;
   }
   return description;
 }
